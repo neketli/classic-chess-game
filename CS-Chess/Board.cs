@@ -13,6 +13,11 @@ namespace CS_Chess
         private Color moveColor;
         private int moveNum;
 
+        public string Fen { get => fen; private set => fen = value; }
+        public int MoveNum { get => moveNum; private set => moveNum = value; }
+        internal Color MoveColor { get => moveColor; set => moveColor = value; }
+
+
         public Board(string fen)
         {
             this.fen = fen;
@@ -91,13 +96,46 @@ namespace CS_Chess
             next.SetFigure(fm.From, Figure.Nothing);
             next.SetFigure(fm.To, (fm.Promotion == Figure.Nothing) ? fm.Figure : fm.Promotion);
             if (MoveColor == Color.Black) next.MoveNum++;
-            next.MoveColor = ColorMethods.FlipColor(MoveColor);
+            next.MoveColor = MoveColor.FlipColor();
             next.GenerateFen();
             return next;
         }
 
-        public string Fen { get => fen; private set => fen = value; }
-        public int MoveNum { get => moveNum; private set => moveNum = value; }
-        internal Color MoveColor { get => moveColor; set => moveColor = value; }
+        public bool IsCheck()
+        {
+            Board after = new Board(Fen)
+            {
+                MoveColor = MoveColor.FlipColor()
+            };
+            return after.CanEatKing();
+        }
+        public bool IsCheckAfterMove(FigureMoving fm)
+        {
+            Board after = Move(fm);
+            return after.CanEatKing();
+        }
+
+        private bool CanEatKing()
+        {
+            Square target = FindTarget();
+            Moves moves = new Moves(this);
+            foreach (FigureOnSquare fs in YieldFigures())
+            {
+                FigureMoving fm = new FigureMoving(fs, target);
+                if (moves.CanMove(fm)) return true;
+            }
+            return false;
+        }
+
+        private Square FindTarget()
+        {
+            Figure target = moveColor == Color.White ? Figure.BlackKing : Figure.WhiteKing;
+            foreach (Square square in Square.YieldSquares())
+                if (GetFigure(square) == target) return square;
+            return Square.Nothing;
+        }
+
+
+
     }
 }

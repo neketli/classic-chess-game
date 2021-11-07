@@ -11,6 +11,22 @@ namespace DemoChess
             {
                 Console.WriteLine(chess.Fen);
                 Print(ChessToAscii(chess));
+                if (chess.IsCheck()) Console.WriteLine("check");
+                if (chess.GetAllMoves().Count == 0)
+                {
+                    if (chess.IsCheck()) Console.WriteLine("mat");
+                    else Console.WriteLine("stalemate");
+
+                    Console.WriteLine("Reload? y/n");
+                    string answer = Console.ReadLine().ToLower();
+                    if (answer[0] == 'y')
+                    {
+                        chess = new();
+                        Print(ChessToAscii(chess));
+                    }
+                    else break;
+
+                }
                 foreach (string Move in chess.GetAllMoves())
                     Console.Write(Move + '\t');
                 Console.Write("\n >>");

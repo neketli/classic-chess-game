@@ -31,7 +31,7 @@ namespace CS_Chess
         public Chess Move(string move)
         {
             FigureMoving fm = new FigureMoving(move);
-            if (!moves.CanMove(fm)) return this;
+            if (!moves.CanMove(fm) || board.IsCheckAfterMove(fm)) return this;
             Board nextBoard = board.Move(fm);
             return new Chess(nextBoard);
         }
@@ -50,7 +50,7 @@ namespace CS_Chess
                 foreach (Square to in Square.YieldSquares())
                 {
                     FigureMoving fm = new FigureMoving(fs, to);
-                    if (moves.CanMove(fm)) allMoves.Add(fm);
+                    if (moves.CanMove(fm) && !board.IsCheckAfterMove(fm)) allMoves.Add(fm);
                 }
         }
 
@@ -61,6 +61,11 @@ namespace CS_Chess
             foreach (FigureMoving fm in allMoves)
                 list.Add(fm.ToString());
             return list;
+        }
+
+        public bool IsCheck()
+        {
+            return board.IsCheck();
         }
        
     }

@@ -63,7 +63,6 @@ namespace CS_Chess
                 case Figure.BlackPawn:
                     return CanPawnMove();
                     
-
                 default:
                     return false;
             }
@@ -98,7 +97,7 @@ namespace CS_Chess
         private bool CanPawnEat(int dy)
         {
             return board.GetFigure(fm.To) != Figure.Nothing &&
-                fm.AbsDeltaX == 0                           &&
+                fm.AbsDeltaX == 1                           &&
                 fm.DeltaY == dy;
         }
 
