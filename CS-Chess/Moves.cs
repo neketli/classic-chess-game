@@ -49,11 +49,11 @@ namespace CS_Chess
 
                 case Figure.WhiteRook:
                 case Figure.BlackRook:
-                    return CanRookMove();
-
+                    return (fm.SignX == 0 || fm.SignY == 0) && CanStraightMove();
+                    
                 case Figure.WhiteBishop:
                 case Figure.BlackBishop:
-                    return CanStraightMove();
+                    return (fm.SignX != 0 || fm.SignY != 0) && CanStraightMove();
 
                 case Figure.WhiteKnight:
                 case Figure.BlackKnight:
@@ -62,10 +62,44 @@ namespace CS_Chess
                 case Figure.WhitePawn:
                 case Figure.BlackPawn:
                     return CanPawnMove();
+                    
 
                 default:
                     return false;
             }
+        }
+
+        private bool CanPawnMove()
+        {
+            if (fm.From.Y < 1 || fm.From.Y > 6) return false;
+            int dy = fm.Figure.GetColor() == Color.White ? 1 : -1;
+            return CanPawnGo(dy) ||
+                CanPawnJump(dy)  ||
+                CanPawnEat(dy);
+        }
+
+
+        private bool CanPawnJump(int dy)
+        {
+            return board.GetFigure(fm.To) == Figure.Nothing &&
+                fm.DeltaX == 0                              &&
+                fm.DeltaY == 2 * dy                         &&
+                (fm.From.Y == 1 || fm.From.Y == 6)          &&
+                board.GetFigure(new Square(fm.From.X, fm.From.Y + dy)) == Figure.Nothing;
+        }
+
+        private bool CanPawnGo(int dy)
+        {
+            return board.GetFigure(fm.To) == Figure.Nothing &&
+                fm.DeltaX == 0                              &&
+                fm.DeltaY == dy;
+        }
+
+        private bool CanPawnEat(int dy)
+        {
+            return board.GetFigure(fm.To) != Figure.Nothing &&
+                fm.AbsDeltaX == 0                           &&
+                fm.DeltaY == dy;
         }
 
         private bool CanStraightMove()

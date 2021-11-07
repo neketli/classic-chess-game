@@ -45,6 +45,14 @@ namespace CS_Chess
 
         }
 
+        internal IEnumerable<FigureOnSquare> YieldFigures()
+        {
+            foreach (Square square in Square.YieldSquares())
+                if (GetFigure(square).GetColor() == moveColor)
+                    yield return new FigureOnSquare(GetFigure(square), square);
+             
+        }
+
         private string FenFigures()
         {
             StringBuilder sb = new StringBuilder();

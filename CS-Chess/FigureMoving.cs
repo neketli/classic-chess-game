@@ -41,5 +41,10 @@ namespace CS_Chess
         internal Figure Figure { get => figure; set => figure = value; }
         internal Square To { get => to; set => to = value; }
         internal Square From { get => from; set => from = value; }
+
+        public override string ToString()
+        {
+            return (char)Figure + From.Name + To.Name + (Promotion == Figure.Nothing ? ' ' : (char)Promotion);
+        }
     }
 }

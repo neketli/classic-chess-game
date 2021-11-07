@@ -35,8 +35,9 @@ namespace CS_Chess
 
 
         public bool OnBoard => x >= 0 && x < 8 && y >= 0 && y < 8; 
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
+        public int X { get => x; private set => x = value; }
+        public int Y { get => y; private set => y = value; }
+        public string Name { get => ((char)('a' + X)).ToString() + (Y + 1).ToString(); }
 
         public override bool Equals(object obj)
         {
@@ -53,6 +54,14 @@ namespace CS_Chess
         public static bool operator !=(Square left, Square right)
         {
             return !(left == right);
+        }
+
+        internal static IEnumerable<Square> YieldSquares()
+        {
+            for (int y = 0; y < 8; y++)
+                for (int x = 0; x < 8; x++)
+                    yield return new Square(x, y);
+             
         }
     }
 }
