@@ -1,43 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace CS_Chess
+/// <summary>
+/// The Board class is a representation of a chessboard. 
+/// It is immutable, and takes care of all the work with the FEN, the initialization of the board, the figures on it.
+/// </summary>
+
+namespace ChessLib
 {
     class Board
     {
-        private string fen;
-        Figure[,] figures;
-        private Color moveColor;
-        private int moveNum;
+        private string fen; // Fen notation 
+        private Figure[,] figures; // array of figures
+        private Color moveColor; // the color that moves
+        private int moveNum; // Move number
 
         public string Fen { get => fen; private set => fen = value; }
         public int MoveNum { get => moveNum; private set => moveNum = value; }
         internal Color MoveColor { get => moveColor; set => moveColor = value; }
 
-
+        /// <summary>
+        /// Constructor initializing board by FEN
+        /// </summary>
+        /// <param name="fen">String of FEN notation</param>
         public Board(string fen)
         {
-            this.fen = fen;
-            figures = new Figure[8,8];
+            Fen = fen;
+            figures = new Figure[8, 8];
             Init();
         }
 
+        /// <summary>
+        /// Method to initialize the board
+        /// </summary>
         private void Init()
         {
-            //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+            //FEN example: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
             string[] parts = Fen.Split();
             if (parts.Length != 6) return;
             InitFigures(parts[0]);
             MoveColor = parts[1] == "b" ? Color.Black : Color.White;
             MoveNum = int.Parse(parts[5]);
-            SetFigure(new Square("e1"), Figure.WhiteKing);
-            SetFigure(new Square("e8"), Figure.BlackKing);
-            MoveColor = Color.White;
         }
 
+        /// <summary>
+        /// Method initializing shapes
+        /// </summary>
+        /// <param name="data">Takes a list of shapes as a string from FEN notation</param>
         void InitFigures(string data)
         {
             for (int j = 8; j >= 2; j--)
@@ -46,18 +55,25 @@ namespace CS_Chess
             string[] lines = data.Split('/');
             for (int y = 7; y >= 0; y--)
                 for (int x = 0; x < 8; x++)
-                    figures[x, y] = lines[7 - y][x] == '.'? Figure.Nothing : (Figure)lines[7 - y][x];
+                    figures[x, y] = lines[7 - y][x] == '.' ? Figure.Nothing : (Figure)lines[7 - y][x];
 
         }
 
+        /// <summary>
+        /// The method required for iterating over figures on squares
+        /// </summary>
+        /// <returns>FigureOnSquare</returns>
         internal IEnumerable<FigureOnSquare> YieldFigures()
         {
             foreach (Square square in Square.YieldSquares())
                 if (GetFigure(square).GetColor() == moveColor)
                     yield return new FigureOnSquare(GetFigure(square), square);
-             
-        }
 
+        }
+        /// <summary>
+        /// Method to build FEN by figures
+        /// </summary>
+        /// <returns>String of FEN</returns>
         private string FenFigures()
         {
             StringBuilder sb = new StringBuilder();
@@ -72,24 +88,41 @@ namespace CS_Chess
                 sb.Replace(t.Substring(0, j), j.ToString());
             return sb.ToString();
         }
-       
+        /// <summary>
+        /// Method to update Fen prop by generated string from Board
+        /// </summary>
         private void GenerateFen()
         {
             Fen = FenFigures() + " " +
                 (MoveColor == Color.White ? "w" : "b") +
                 " - - 0 " + moveNum.ToString();
         }
+
+        /// <summary>
+        /// A method that allows you to get a figure by square
+        /// </summary>
+        /// <param name="square"></param>
+        /// <returns>Instance of Figure</returns>
         public Figure GetFigure(Square square)
         {
             if (square.OnBoard) return figures[square.X, square.Y];
             return Figure.Nothing;
         }
-
+        /// <summary>
+        /// A method that allows you to set a figure on square
+        /// </summary>
+        /// <param name="square"></param>
+        /// <param name="figure"></param>
         private void SetFigure(Square square, Figure figure)
         {
             if (square.OnBoard) figures[square.X, square.Y] = figure;
         }
 
+        /// <summary>
+        /// Method for making a move
+        /// </summary>
+        /// <param name="fm">Takes an instance of FigureeMoving</param>
+        /// <returns>Returns new Board with the executed move</returns>
         public Board Move(FigureMoving fm)
         {
             Board next = new Board(Fen);
@@ -134,8 +167,5 @@ namespace CS_Chess
                 if (GetFigure(square) == target) return square;
             return Square.Nothing;
         }
-
-
-
     }
 }

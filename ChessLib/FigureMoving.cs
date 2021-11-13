@@ -1,16 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CS_Chess
+/// <summary>
+/// The figure movement class implements the logic of figure movement.
+/// 
+/// Has two public constructors for generating movement both according to the given figure on the cell and destination Square
+/// or according to the given string.
+/// </summary>
+
+namespace ChessLib
 {
     class FigureMoving
     {
         private Figure figure;
         private Square from;
         private Square to;
+
+        public Figure Promotion { get; private set; }
+        internal Figure Figure { get => figure; set => figure = value; }
+        internal Square To { get => to; set => to = value; }
+        internal Square From { get => from; set => from = value; }
 
         public FigureMoving(FigureOnSquare fos, Square to, Figure promotion = Figure.Nothing)
         {
@@ -28,6 +36,9 @@ namespace CS_Chess
             Promotion = move.Length != 6 ? Figure.Nothing : (Figure)move[5];
         }
 
+        /// <summary>
+        /// Some methods to make it easier to count the moves of pieces
+        /// </summary>
         public int DeltaX { get => To.X - From.X; }
         public int DeltaY { get => To.Y - From.Y; }
 
@@ -37,10 +48,6 @@ namespace CS_Chess
         public int SignX { get => Math.Sign(DeltaX); }
         public int SignY { get => Math.Sign(DeltaY); }
 
-        public Figure Promotion { get; private set; }
-        internal Figure Figure { get => figure; set => figure = value; }
-        internal Square To { get => to; set => to = value; }
-        internal Square From { get => from; set => from = value; }
 
         public override string ToString()
         {

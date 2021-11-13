@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/// <summary>
+/// Enum and static methods for colors in chess.
+/// </summary>
 
-namespace CS_Chess
+namespace ChessLib
 {
     enum Color
     {
-        Nothing, 
+        Nothing,
         White,
         Black
     }

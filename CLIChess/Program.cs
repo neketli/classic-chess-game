@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ChessLib;
+using System;
 
-namespace DemoChess
+namespace CLIChess
 {
     class Program
     {
         static void Main(string[] args)
         {
-            CS_Chess.Chess chess = new();
+            Chess chess = new();
             while (true)
             {
                 Console.WriteLine(chess.Fen);
@@ -36,7 +37,7 @@ namespace DemoChess
             }
         }
 
-        static string ChessToAscii(CS_Chess.Chess chess)
+        static string ChessToAscii(Chess chess)
         {
             string text = "#-----------------#\n";
             for (int y = 7; y >= 0; y--)

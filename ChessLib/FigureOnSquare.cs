@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/// <summary>
+/// Class FigureOnSquare implements connecting Figures with a Square for further placement in the Board
+/// </summary>
 
-namespace CS_Chess
+namespace ChessLib
 {
     class FigureOnSquare
     {

@@ -1,18 +1,16 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/// <summary>
+/// Class Moves implements all the logic of the movements of all specified figures.
+/// Has a public CanMove method accepting an instance of FigureMoving and returns whether the Figure (of FigureMoving) can move.
+/// </summary>
 
-namespace CS_Chess
+namespace ChessLib
 {
     class Moves
     {
         FigureMoving fm;
         Board board;
 
-        public Moves (Board board)
+        public Moves(Board board)
         {
             this.board = board;
         }
@@ -25,17 +23,17 @@ namespace CS_Chess
                 CanFigureMove();
         }
 
-        bool CanMoveFrom()
+        private bool CanMoveFrom()
         {
             return fm.From.OnBoard && fm.Figure.GetColor() == board.MoveColor;
         }
 
-        bool CanMoveTo()
+        private bool CanMoveTo()
         {
             return fm.From != fm.To && fm.To.OnBoard && board.GetFigure(fm.To).GetColor() != board.MoveColor;
         }
 
-        bool CanFigureMove()
+        private bool CanFigureMove()
         {
             switch (fm.Figure)
             {
@@ -50,7 +48,7 @@ namespace CS_Chess
                 case Figure.WhiteRook:
                 case Figure.BlackRook:
                     return (fm.SignX == 0 || fm.SignY == 0) && CanStraightMove();
-                    
+
                 case Figure.WhiteBishop:
                 case Figure.BlackBishop:
                     return (fm.SignX != 0 || fm.SignY != 0) && CanStraightMove();
@@ -62,7 +60,7 @@ namespace CS_Chess
                 case Figure.WhitePawn:
                 case Figure.BlackPawn:
                     return CanPawnMove();
-                    
+
                 default:
                     return false;
             }
@@ -73,7 +71,7 @@ namespace CS_Chess
             if (fm.From.Y < 1 || fm.From.Y > 6) return false;
             int dy = fm.Figure.GetColor() == Color.White ? 1 : -1;
             return CanPawnGo(dy) ||
-                CanPawnJump(dy)  ||
+                CanPawnJump(dy) ||
                 CanPawnEat(dy);
         }
 
@@ -81,23 +79,23 @@ namespace CS_Chess
         private bool CanPawnJump(int dy)
         {
             return board.GetFigure(fm.To) == Figure.Nothing &&
-                fm.DeltaX == 0                              &&
-                fm.DeltaY == 2 * dy                         &&
-                (fm.From.Y == 1 || fm.From.Y == 6)          &&
+                fm.DeltaX == 0 &&
+                fm.DeltaY == 2 * dy &&
+                (fm.From.Y == 1 || fm.From.Y == 6) &&
                 board.GetFigure(new Square(fm.From.X, fm.From.Y + dy)) == Figure.Nothing;
         }
 
         private bool CanPawnGo(int dy)
         {
             return board.GetFigure(fm.To) == Figure.Nothing &&
-                fm.DeltaX == 0                              &&
+                fm.DeltaX == 0 &&
                 fm.DeltaY == dy;
         }
 
         private bool CanPawnEat(int dy)
         {
             return board.GetFigure(fm.To) != Figure.Nothing &&
-                fm.AbsDeltaX == 1                           &&
+                fm.AbsDeltaX == 1 &&
                 fm.DeltaY == dy;
         }
 
