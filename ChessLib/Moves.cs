@@ -72,7 +72,8 @@ namespace ChessLib
             int dy = fm.Figure.GetColor() == Color.White ? 1 : -1;
             return CanPawnGo(dy) ||
                 CanPawnJump(dy) ||
-                CanPawnEat(dy);
+                CanPawnEat(dy) ||
+                CanPawnEnpassant(dy);
         }
 
 
@@ -101,6 +102,15 @@ namespace ChessLib
                 !((fm.To.Y == 0 || fm.To.Y == 7) && fm.Promotion == Figure.Nothing);
         }
 
+        private bool CanPawnEnpassant(int dy)
+        {
+            if (fm.To == board.Enpassant &&
+                fm.DeltaY == dy &&
+                fm.AbsDeltaX == 1 &&
+                (dy == 1 && fm.From.Y == 4 || dy == -1 && fm.From.Y == 3)) return true;
+            return false;   
+        }
+
         private bool CanStraightMove()
         {
             Square at = fm.From;
@@ -126,7 +136,7 @@ namespace ChessLib
                     fm.To == new Square("g1") &&
                     board.GetFigure(new Square("f1")) == Figure.Nothing &&
                     board.GetFigure(new Square("g1")) == Figure.Nothing &&
-                    board.canCastleH1 &&
+                    board.CanCastleH1 &&
                     !board.IsCheck() &&
                     !board.IsCheckAfterMove(new FigureMoving("Ke1f1")) &&
                     !board.IsCheckAfterMove(fm)) return true;
@@ -135,7 +145,7 @@ namespace ChessLib
                     board.GetFigure(new Square("b1")) == Figure.Nothing &&
                     board.GetFigure(new Square("c1")) == Figure.Nothing &&
                     board.GetFigure(new Square("d1")) == Figure.Nothing &&
-                    board.canCastleA1 &&
+                    board.CanCastleA1 &&
                     !board.IsCheck() &&
                     !board.IsCheckAfterMove(new FigureMoving("Ke1c1")) &&
                     !board.IsCheckAfterMove(fm)) return true;
@@ -147,7 +157,7 @@ namespace ChessLib
                     fm.To == new Square("g8") &&
                     board.GetFigure(new Square("f8")) == Figure.Nothing &&
                     board.GetFigure(new Square("g8")) == Figure.Nothing &&
-                    board.canCastleH8 &&
+                    board.CanCastleH8 &&
                     !board.IsCheck() &&
                     !board.IsCheckAfterMove(new FigureMoving("Ke8f8")) &&
                     !board.IsCheckAfterMove(fm)) return true;
@@ -156,7 +166,7 @@ namespace ChessLib
                     board.GetFigure(new Square("b8")) == Figure.Nothing &&
                     board.GetFigure(new Square("c8")) == Figure.Nothing &&
                     board.GetFigure(new Square("d8")) == Figure.Nothing &&
-                    board.canCastleA8 &&
+                    board.CanCastleA8 &&
                     !board.IsCheck() &&
                     !board.IsCheckAfterMove(new FigureMoving("Ke8c8")) &&
                     !board.IsCheckAfterMove(fm)) return true;
