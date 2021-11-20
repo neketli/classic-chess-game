@@ -50,9 +50,8 @@ namespace ChessLib
         /// <returns>An instance of the Chess class with the move made.</returns>
         public Chess Move(string move)
         {
-            FigureMoving fm = new FigureMoving(move);
-            if (!moves.CanMove(fm) || board.IsCheckAfterMove(fm)) return this;
-            Board nextBoard = board.Move(fm);
+            if (!IsValidMove(move)) return this;
+            Board nextBoard = board.Move(new FigureMoving(move));
             return new Chess(nextBoard);
         }
 
@@ -88,10 +87,11 @@ namespace ChessLib
             allMoves = new List<FigureMoving>();
             foreach (FigureOnSquare fs in board.YieldFigures())
                 foreach (Square to in Square.YieldSquares())
-                {
-                    FigureMoving fm = new FigureMoving(fs, to);
-                    if (moves.CanMove(fm) && !board.IsCheckAfterMove(fm)) allMoves.Add(fm);
-                }
+                    foreach (Figure promotion in fs.Figure.YieldPromotion(to))
+                    {
+                        FigureMoving fm = new FigureMoving(fs, to, promotion);
+                        if (moves.CanMove(fm) && !board.IsCheckAfterMove(fm)) allMoves.Add(fm);
+                    }
         }
 
         /// <summary>
@@ -110,6 +110,13 @@ namespace ChessLib
         public bool IsCheck()
         {
             return board.IsCheck();
+        }
+
+        public bool IsValidMove(string move)
+        {
+            FigureMoving fm = new FigureMoving(move);
+            if (!moves.CanMove(fm) || board.IsCheckAfterMove(fm)) return false;
+            return true;
         }
 
     }

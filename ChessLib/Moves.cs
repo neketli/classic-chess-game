@@ -39,7 +39,7 @@ namespace ChessLib
             {
                 case Figure.WhiteKing:
                 case Figure.BlackKing:
-                    return CanKingMove();
+                    return CanKingMove() || CanKingCastle();
 
                 case Figure.WhiteQueen:
                 case Figure.BlackQueen:
@@ -51,7 +51,7 @@ namespace ChessLib
 
                 case Figure.WhiteBishop:
                 case Figure.BlackBishop:
-                    return (fm.SignX != 0 || fm.SignY != 0) && CanStraightMove();
+                    return (fm.SignX != 0 && fm.SignY != 0) && CanStraightMove();
 
                 case Figure.WhiteKnight:
                 case Figure.BlackKnight:
@@ -89,14 +89,16 @@ namespace ChessLib
         {
             return board.GetFigure(fm.To) == Figure.Nothing &&
                 fm.DeltaX == 0 &&
-                fm.DeltaY == dy;
+                fm.DeltaY == dy &&
+                !((fm.To.Y == 0 || fm.To.Y == 7) && fm.Promotion == Figure.Nothing);
         }
 
         private bool CanPawnEat(int dy)
         {
             return board.GetFigure(fm.To) != Figure.Nothing &&
                 fm.AbsDeltaX == 1 &&
-                fm.DeltaY == dy;
+                fm.DeltaY == dy &&
+                !((fm.To.Y == 0 || fm.To.Y == 7) && fm.Promotion == Figure.Nothing);
         }
 
         private bool CanStraightMove()
@@ -113,6 +115,53 @@ namespace ChessLib
         private bool CanKingMove()
         {
             if (fm.AbsDeltaX <= 1 && fm.AbsDeltaY <= 1) return true;
+            return false;
+        }
+
+        private bool CanKingCastle()
+        {
+            if (fm.Figure.GetColor() == Color.White)
+            {
+                if (fm.From == new Square("e1") &&
+                    fm.To == new Square("g1") &&
+                    board.GetFigure(new Square("f1")) == Figure.Nothing &&
+                    board.GetFigure(new Square("g1")) == Figure.Nothing &&
+                    board.canCastleH1 &&
+                    !board.IsCheck() &&
+                    !board.IsCheckAfterMove(new FigureMoving("Ke1f1")) &&
+                    !board.IsCheckAfterMove(fm)) return true;
+                if (fm.From == new Square("e1") &&
+                    fm.To == new Square("c1") &&
+                    board.GetFigure(new Square("b1")) == Figure.Nothing &&
+                    board.GetFigure(new Square("c1")) == Figure.Nothing &&
+                    board.GetFigure(new Square("d1")) == Figure.Nothing &&
+                    board.canCastleA1 &&
+                    !board.IsCheck() &&
+                    !board.IsCheckAfterMove(new FigureMoving("Ke1c1")) &&
+                    !board.IsCheckAfterMove(fm)) return true;
+                return false;
+            }
+            if (fm.Figure.GetColor() == Color.Black)
+            {
+                if (fm.From == new Square("e8") &&
+                    fm.To == new Square("g8") &&
+                    board.GetFigure(new Square("f8")) == Figure.Nothing &&
+                    board.GetFigure(new Square("g8")) == Figure.Nothing &&
+                    board.canCastleH8 &&
+                    !board.IsCheck() &&
+                    !board.IsCheckAfterMove(new FigureMoving("Ke8f8")) &&
+                    !board.IsCheckAfterMove(fm)) return true;
+                if (fm.From == new Square("e8") &&
+                    fm.To == new Square("c8") &&
+                    board.GetFigure(new Square("b8")) == Figure.Nothing &&
+                    board.GetFigure(new Square("c8")) == Figure.Nothing &&
+                    board.GetFigure(new Square("d8")) == Figure.Nothing &&
+                    board.canCastleA8 &&
+                    !board.IsCheck() &&
+                    !board.IsCheckAfterMove(new FigureMoving("Ke8c8")) &&
+                    !board.IsCheckAfterMove(fm)) return true;
+                return false;
+            }
             return false;
         }
 

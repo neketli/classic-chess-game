@@ -30,10 +30,27 @@ namespace ChessLib
 
         public FigureMoving(string move)
         {
-            Figure = (Figure)move[0];
-            From = new Square(move.Substring(1, 2));
-            To = new Square(move.Substring(3, 2));
-            Promotion = move.Length != 6 ? Figure.Nothing : (Figure)move[5];
+            try
+            {
+                Figure = (Figure)move[0];
+                From = new Square(move.ToLower().Substring(1, 2));
+                To = new Square(move.ToLower().Substring(3, 2));
+                if (move.Length == 6 && Figure.GetColor() == Color.White)
+                {
+                    var temp = move[5].ToString().ToUpper();
+                    Promotion = (Figure)temp[0];
+                }
+                else if (move.Length == 6 && Figure.GetColor() == Color.Black)
+                {
+                    var temp = move[5].ToString().ToLower();
+                    Promotion = (Figure)temp[0];
+                }
+                else Promotion = Figure.Nothing;
+            }
+            catch (System.ArgumentOutOfRangeException)
+            {
+                return;
+            }
         }
 
         /// <summary>

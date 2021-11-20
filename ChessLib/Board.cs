@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 /// <summary>
@@ -14,6 +15,10 @@ namespace ChessLib
         private Figure[,] figures; // array of figures
         private Color moveColor; // the color that moves
         private int moveNum; // Move number
+        public bool canCastleA1 { get; protected set; }
+        public bool canCastleH1 { get; protected set; }
+        public bool canCastleA8 { get; protected set; }
+        public bool canCastleH8 { get; protected set; }
 
         public string Fen { get => fen; private set => fen = value; }
         public int MoveNum { get => moveNum; private set => moveNum = value; }
@@ -40,7 +45,16 @@ namespace ChessLib
             if (parts.Length != 6) return;
             InitFigures(parts[0]);
             MoveColor = parts[1] == "b" ? Color.Black : Color.White;
+            InitFlags(parts[2]);
             MoveNum = int.Parse(parts[5]);
+        }
+
+        private void InitFlags(string flags)
+        {
+            canCastleA1 = flags.Contains("Q");
+            canCastleA8 = flags.Contains("q");
+            canCastleH1 = flags.Contains("K");
+            canCastleH8 = flags.Contains("k");
         }
 
         /// <summary>
@@ -88,14 +102,64 @@ namespace ChessLib
                 sb.Replace(t.Substring(0, j), j.ToString());
             return sb.ToString();
         }
+
+        private string FenCastleFlags()
+        {
+            string flags =
+                (canCastleA1 ? "Q" : "") +
+                (canCastleH1 ? "K" : "") +
+                (canCastleA8 ? "q" : "") +
+                (canCastleH8 ? "k" : "");
+            flags = flags.Length != 0 ? flags : "-";
+            return flags;
+
+        }
+
+        private void UpdateCastleFlags(FigureMoving fm)
+        {
+            switch (fm.Figure)
+            {
+                case Figure.WhiteKing:
+                    canCastleA1 = false;
+                    canCastleH1 = false;
+                    return;
+                case Figure.WhiteRook:
+                    if (fm.From == new Square("a1"))
+                    {
+                        canCastleA1 = false;
+                    }
+                    if (fm.From == new Square("h1"))
+                    {
+                        canCastleH1 = false;
+                    }
+                    return;
+                case Figure.BlackKing:
+                    canCastleA8 = false;
+                    canCastleH8 = false;
+                    return;
+                case Figure.BlackRook:
+                    if (fm.From == new Square("a8"))
+                    {
+                        canCastleA1 = false;
+                    }
+                    if (fm.From == new Square("h8"))
+                    {
+                        canCastleH1 = false;
+                    }
+                    return;
+                default: return;
+            }
+        }
+
         /// <summary>
         /// Method to update Fen prop by generated string from Board
         /// </summary>
         private void GenerateFen()
         {
             Fen = FenFigures() + " " +
-                (MoveColor == Color.White ? "w" : "b") +
-                " - - 0 " + moveNum.ToString();
+                (MoveColor == Color.White ? "w" : "b") + " " +
+                FenCastleFlags() +
+                " - 0 " + moveNum.ToString();
         }
 
         /// <summary>
@@ -128,6 +192,8 @@ namespace ChessLib
             Board next = new Board(Fen);
             next.SetFigure(fm.From, Figure.Nothing);
             next.SetFigure(fm.To, (fm.Promotion == Figure.Nothing) ? fm.Figure : fm.Promotion);
+            next.MoveCastleRook(fm);
+            next.UpdateCastleFlags(fm);
             if (MoveColor == Color.Black) next.MoveNum++;
             next.MoveColor = MoveColor.FlipColor();
             next.GenerateFen();
@@ -146,6 +212,43 @@ namespace ChessLib
         {
             Board after = Move(fm);
             return after.CanEatKing();
+        }
+
+        private void MoveCastleRook(FigureMoving fm)
+        {
+            if (fm.Figure == Figure.WhiteKing &&
+                fm.From == new Square("e1") &&
+                fm.To == new Square("g1"))
+            {
+                SetFigure(new Square("h1"), Figure.Nothing);
+                SetFigure(new Square("f1"), Figure.WhiteRook);
+                return;
+            }
+            if (fm.Figure == Figure.WhiteKing &&
+                            fm.From == new Square("e1") &&
+                            fm.To == new Square("c1"))
+            {
+                SetFigure(new Square("a1"), Figure.Nothing);
+                SetFigure(new Square("d1"), Figure.WhiteRook);
+                return;
+            }
+            if (fm.Figure == Figure.BlackKing &&
+                fm.From == new Square("e8") &&
+                fm.To == new Square("g8"))
+            {
+                SetFigure(new Square("h8"), Figure.Nothing);
+                SetFigure(new Square("f8"), Figure.BlackRook);
+                return;
+            }
+            if (fm.Figure == Figure.BlackKing &&
+                            fm.From == new Square("e8") &&
+                            fm.To == new Square("c8"))
+            {
+                SetFigure(new Square("a8"), Figure.Nothing);
+                SetFigure(new Square("d8"), Figure.BlackRook);
+                return;
+            }
+
         }
 
         private bool CanEatKing()

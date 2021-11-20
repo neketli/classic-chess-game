@@ -7,7 +7,7 @@ namespace CLIChess
     {
         static void Main(string[] args)
         {
-            Chess chess = new();
+            Chess chess = new("r3k2r/ppppppPp/8/8/8/8/PPPPPP1P/R3K2R w KQkq - 0 1");
             while (true)
             {
                 Console.WriteLine(chess.Fen);
