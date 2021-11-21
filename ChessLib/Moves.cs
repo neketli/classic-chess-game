@@ -159,7 +159,7 @@ namespace ChessLib
                     board.GetFigure(new Square("g8")) == Figure.Nothing &&
                     board.CanCastleH8 &&
                     !board.IsCheck() &&
-                    !board.IsCheckAfterMove(new FigureMoving("Ke8f8")) &&
+                    !board.IsCheckAfterMove(new FigureMoving("ke8f8")) &&
                     !board.IsCheckAfterMove(fm)) return true;
                 if (fm.From == new Square("e8") &&
                     fm.To == new Square("c8") &&
@@ -168,7 +168,7 @@ namespace ChessLib
                     board.GetFigure(new Square("d8")) == Figure.Nothing &&
                     board.CanCastleA8 &&
                     !board.IsCheck() &&
-                    !board.IsCheckAfterMove(new FigureMoving("Ke8c8")) &&
+                    !board.IsCheckAfterMove(new FigureMoving("ke8c8")) &&
                     !board.IsCheckAfterMove(fm)) return true;
                 return false;
             }
