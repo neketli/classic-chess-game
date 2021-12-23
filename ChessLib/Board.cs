@@ -4,7 +4,7 @@ using System.Text;
 
 /// <summary>
 /// The Board class is a representation of a chessboard. 
-/// It is immutable, and takes care of all the work with the FEN, the initialization of the board, the figures on it.
+/// It  takes care of all the work with the FEN, the initialization of the board, the figures on it.
 /// </summary>
 
 namespace ChessLib
@@ -68,6 +68,17 @@ namespace ChessLib
         {
             Board after = Move(fm);
             return after.CanEatKing();
+        }
+
+        public bool IsOnlyTwoKings()
+        {
+            int counter = 0;
+            foreach (var item in figures)
+            {
+                if (item != Figure.Nothing) counter++;
+            }
+            if (counter == 2) return true;
+            return false;
         }
 
         /// <summary>
@@ -268,23 +279,19 @@ namespace ChessLib
 
         private bool CanEatKing()
         {
-            Square target = FindTarget();
+            Figure target = moveColor == Color.White ? Figure.BlackKing : Figure.WhiteKing;
+            Square targetSquare = Square.Nothing;
+            foreach (Square square in Square.YieldSquares())
+                if (GetFigure(square) == target) targetSquare = square;
             Moves moves = new Moves(this);
             foreach (FigureOnSquare fs in YieldFigures())
             {
-                FigureMoving fm = new FigureMoving(fs, target);
+                FigureMoving fm = new FigureMoving(fs, targetSquare);
                 if (moves.CanMove(fm)) return true;
             }
             return false;
         }
 
-        private Square FindTarget()
-        {
-            Figure target = moveColor == Color.White ? Figure.BlackKing : Figure.WhiteKing;
-            foreach (Square square in Square.YieldSquares())
-                if (GetFigure(square) == target) return square;
-            return Square.Nothing;
-        }
 
         /// <summary>
         /// The method required for iterating over figures on squares

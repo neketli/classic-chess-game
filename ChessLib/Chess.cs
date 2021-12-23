@@ -119,6 +119,11 @@ namespace ChessLib
             return true;
         }
 
+        public bool IsOnlyTwoKings()
+        {
+            return board.IsOnlyTwoKings();
+        }
+
     }
 
 
