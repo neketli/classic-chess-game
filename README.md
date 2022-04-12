@@ -6,11 +6,11 @@ The project is an implementation of the simplest chess engine for connecting to 
 
 Implemented: console interface and unity project.
 
-# For launch
+## For launch
 
 Everything that can be launched is located in the production folder.
 
-# If you need to know how it works
+## If you need to know how it works
 
 Auto-generated docs fron XML comments in code u will find in <b>Doc</b> directrory
 
