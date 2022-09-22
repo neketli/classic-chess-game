@@ -1,19 +1,23 @@
-# ClassicChessGame
+# Chess game :chess_pawn:
 
-Educational project completed as part of the course work on object-oriented programming. DSTU student, 3rd year, Department of Software Engineering
+Implemented as a term paper for the 3rd year of the university, the OOP course.
 
-The project is an implementation of the simplest chess engine for connecting to interfaces convenient for you.
+### What was done? :zap:
 
-Implemented: console interface and unity project.
+The implementation includes a simple chess engine (library in DLL format), for processing game events, CLI for .NET and a full-fledged unity project to run on Windows.
 
-## For launch
+## For launch :fire:
 
-Everything that can be launched is located in the production folder.
+For the implementation of this project, the platform .net and c#, respectively, was chosen.
+You can download all the materials from the releases for the test.
 
-## If you need to know how it works
+You need .net 5.0.
 
-Auto-generated docs fron XML comments in code u will find in <b>Doc</b> directrory
+## If you need to know how it works :book:
 
----
+Auto-generated docs fron XML comments in code u will find in **Doc** directrory, and for link on wikis.
 
-Development of a description in the process...
+### Some docs stuff :bulb:
+
+Here u can find uml's. And if you want text of course-work you can find it in **stuff**
+
