@@ -13,6 +13,8 @@ The implementation includes a simple chess engine (library in DLL format), for p
 For the implementation of this project, the platform .net and c#, respectively, was chosen.
 You can download all the materials from the releases for the test.
 
+[Releases](https://github.com/neketli/ClassicChessGame/releases/tag/chess-game)
+
 You need .net 5.0.
 
 ### If you need to know how it works :book:
@@ -21,7 +23,7 @@ Auto-generated docs fron XML comments in code u will find in **Doc** directrory,
 
 ### Some docs stuff :bulb:
 
-Here u can find uml's. And if you want text of course-work you can find it in **stuff**
+Here u can find uml's. And if you want text of course-work (RU) you can find it in **stuff**
 
 ![UML2](https://user-images.githubusercontent.com/48692866/191668442-25ea17e3-53bf-4152-b388-28e3df939df8.png)
 
